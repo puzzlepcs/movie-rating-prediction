@@ -1,9 +1,10 @@
 # Naive Baysian implementation
 from konlpy.tag import Okt
 import math
+from konlpy import jvm
 
 class NaiveBayesClassifier:
-    def __init_(self):
+    def __init__(self):
         self.num0 = 0           # total num of negative reviews
         self.num1 = 0           # total num of posivie reviews
         self.words0 = 0         # total num of words in negative reviews  
@@ -190,13 +191,30 @@ class NaiveBayesClassifier:
 
         print('Classification done')
 
+    def predict_pos_neg(self, review):
+        p1, p0 = self.calculate_prob(review)
+        if p1 > p0:
+            print('[{}]: considered 1 (positive), {:.2f} : {:.2f} \n'.format(review, p1*100, p0*100))
+        else:
+            print('[{}]: considered 0 (negative), {:.2f} : {:.2f} \n'.format(review, p1*100, p0*100))
 
-if __name__=='__main__':
+def main():
     train = 'data/ratings_train.txt'
-    test = 'ratings_test.txt'
-    result = 'ratings_result.txt'
-    vaild = 'ratings_valid.txt'
+    test = 'data/ratings_test.txt'
+    result = 'data/ratings_result.txt'
+    vaild = 'data/ratings_valid.txt'
 
     model = NaiveBayesClassifier()
     model.train_by_morph(train)
     model.classify_by_morph(test, result)
+
+    print('\n')
+    model.predict_pos_neg('올해 최고의 영화! 세 번 넘게 봐도 질리지가 않네요.')
+    model.predict_pos_neg('배경 음악이 영화의 분위기랑 너무 안 맞앗습니다. 몰입에 방해가 됩니다.')
+    model.predict_pos_neg('주연 배우가 신인인데 연기를 진짜 잘 하네요. 몰입감 ㅎㄷㄷ')
+    model.predict_pos_neg('주연배우 때문에 봤어요')
+    model.predict_pos_neg('진짜 너무 너무')
+
+if __name__=='__main__':
+    jvm.init_jvm()
+    main()
